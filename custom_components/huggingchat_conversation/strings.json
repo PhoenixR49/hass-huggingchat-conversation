@@ -1,0 +1,28 @@
+{
+  "config": {
+    "error": {
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "email": "[%key:common::config_flow::data::email%]",
+          "password": "[%key:common::config_flow::data::password%]"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "chat_model": "Completion model",
+          "prompt": "Prompt template"
+        },
+        "data_description": {
+          "chat_model": "HuggingFace chat_model number.\n\n0 = OpenAssistant/oasst-sft-6-llama-30b-xor\n1 = meta-call/CodeLlama-2-70b-chat-hf\n2 = codellama/CodeLlama-34b-Instruct-hf\n3 = tiiuae/falcon-180B-chat\n4 = mistralai/Mistral-7B-Instruct-v0.2\n5 = openchat/openchat-3.5-1210."
+        }
+      }
+    }
+  }
+}
