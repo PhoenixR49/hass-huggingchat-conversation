@@ -24,12 +24,18 @@ from homeassistant.helpers.selector import (
 from .const import (
     CONF_CHAT_MODEL,
     CONF_EMAIL,
+    CONF_MAX_TOKENS,
     CONF_PASSWORD,
     CONF_PROMPT,
+    CONF_TEMPERATURE,
+    CONF_TOP_P,
     DEFAULT_CHAT_MODEL,
     DEFAULT_EMAIL,
+    DEFAULT_MAX_TOKENS,
     DEFAULT_PASSWORD,
     DEFAULT_PROMPT,
+    DEFAULT_TEMPERATURE,
+    DEFAULT_TOP_P,
     DOMAIN,
 )
 
@@ -54,6 +60,9 @@ DEFAULT_OPTIONS = types.MappingProxyType(
         CONF_PASSWORD: DEFAULT_PASSWORD,
         CONF_CHAT_MODEL: DEFAULT_CHAT_MODEL,
         CONF_PROMPT: DEFAULT_PROMPT,
+        CONF_MAX_TOKENS: DEFAULT_MAX_TOKENS,
+        CONF_TOP_P: DEFAULT_TOP_P,
+        CONF_TEMPERATURE: DEFAULT_TEMPERATURE,
     }
 )
 
@@ -133,13 +142,28 @@ def huggingchat_config_option_schema(options: MappingProxyType[str, Any]) -> dic
         options = DEFAULT_OPTIONS
     return {
         vol.Optional(
+            CONF_CHAT_MODEL,
+            description={"suggested_value": options[CONF_CHAT_MODEL]},
+            default=DEFAULT_CHAT_MODEL,
+        ): NumberSelector(NumberSelectorConfig(min=0, max=5, step=1)),
+        vol.Optional(
             CONF_PROMPT,
             description={"suggested_value": options[CONF_PROMPT]},
             default=DEFAULT_PROMPT,
         ): TemplateSelector(),
         vol.Optional(
-            CONF_CHAT_MODEL,
-            description={"suggested_value": options[CONF_CHAT_MODEL]},
-            default=DEFAULT_CHAT_MODEL,
-        ): NumberSelector(NumberSelectorConfig(min=0, max=5, step=1)),
+            CONF_MAX_TOKENS,
+            description={"suggested_value": options[CONF_MAX_TOKENS]},
+            default=DEFAULT_MAX_TOKENS,
+        ): int,
+        vol.Optional(
+            CONF_TOP_P,
+            description={"suggested_value": options[CONF_TOP_P]},
+            default=DEFAULT_TOP_P,
+        ): NumberSelector(NumberSelectorConfig(min=0, max=1, step=0.05)),
+        vol.Optional(
+            CONF_TEMPERATURE,
+            description={"suggested_value": options[CONF_TEMPERATURE]},
+            default=DEFAULT_TEMPERATURE,
+        ): NumberSelector(NumberSelectorConfig(min=0, max=1, step=0.05)),
     }

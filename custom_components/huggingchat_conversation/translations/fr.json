@@ -17,10 +17,14 @@
       "init": {
         "data": {
           "chat_model": "Modèle de complétion",
-          "prompt": "Prompt Template (modèle d'invite)"
+          "prompt": "Prompt Template (modèle d'invite)",
+          "max_tokens": "Nombre maximal de jetons à renvoyer dans la réponse",
+          "top_p": "Top P",
+          "temperature": "Temperature"
         },
         "data_description": {
-          "chat_model": "HuggingFace chat_model number.\n\n0 = OpenAssistant/oasst-sft-6-llama-30b-xor\n1 = meta-call/CodeLlama-2-70b-chat-hf\n2 = codellama/CodeLlama-34b-Instruct-hf\n3 = tiiuae/falcon-180B-chat\n4 = mistralai/Mistral-7B-Instruct-v0.2\n5 = openchat/openchat-3.5-1210."
+          "chat_model": "HuggingFace chat_model number.\n\n0 = OpenAssistant/oasst-sft-6-llama-30b-xor\n1 = meta-call/CodeLlama-2-70b-chat-hf\n2 = codellama/CodeLlama-34b-Instruct-hf\n3 = tiiuae/falcon-180B-chat\n4 = mistralai/Mistral-7B-Instruct-v0.2\n5 = openchat/openchat-3.5-1210",
+          "temperature": "Créativité/Prudence du modèle. Une température plus élevée favorise la diversité en permettant des choix de mots plus imprévisibles, tandis qu'une température plus basse favorise des choix plus prévisibles et plus conservateurs."
         }
       }
     }
