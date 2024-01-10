@@ -96,7 +96,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_error(
                 intent.IntentResponseErrorCode.UNKNOWN,
-                f"Sorry, an error occurred when init*ialising the chat: {err}"
+                f"Sorry, an error occurred when initialising the chat: {err}"
             )
             return conversation.ConversationResult(
                 response=intent_response, conversation_id=user_input.conversation_id
@@ -116,7 +116,11 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             conversation_id = info.id
 
             try:
+                await self.hass.async_add_executor_job(chatbot.delete_conversation, info)
                 prompt = self._async_generate_prompt(raw_prompt)
+                chatbot = await self.hass.async_add_executor_job(
+                    initialize_chatbot, cookies.get_dict(), model, prompt,
+                )
             except TemplateError as err:
                 _LOGGER.error("Error rendering prompt: %s", err)
                 intent_response = intent.IntentResponse(language=user_input.language)
@@ -128,9 +132,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
                     response=intent_response, conversation_id=conversation_id
                 )
 
-            chatbot = await self.hass.async_add_executor_job(
-                initialize_chatbot, cookies.get_dict(), model, prompt,
-            )
+            info = await self.hass.async_add_executor_job(chatbot.get_conversation_info)
+            conversation_id = info.id
+
             await self.hass.async_add_executor_job(chatbot.get_remote_conversations, True)
             chatbot.change_conversation(info)
 
