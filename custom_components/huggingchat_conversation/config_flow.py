@@ -145,7 +145,7 @@ def huggingchat_config_option_schema(options: MappingProxyType[str, Any]) -> dic
             CONF_CHAT_MODEL,
             description={"suggested_value": options[CONF_CHAT_MODEL]},
             default=DEFAULT_CHAT_MODEL,
-        ): NumberSelector(NumberSelectorConfig(min=0, max=5, step=1)),
+        ): NumberSelector(NumberSelectorConfig(min=0, max=4, step=1)),
         vol.Optional(
             CONF_PROMPT,
             description={"suggested_value": options[CONF_PROMPT]},
