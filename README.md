@@ -4,14 +4,22 @@ Conversation support for Home Assistant using HuggingChat.
 
 ## Installation
 
-- Install HuggingChat Conversation.
+- Install HuggingChat Conversation:
+  - With [HACS](https://hacs.xyz) (recommended),
+    - select Frontend.
+    - Open the menu at the top right and use the Customised repositories option to add the card's repository.
+    - Add the address of the repository with the category `Integration`, and press ADD. The card repository appears in the list.
+    - The card for this new repository will be displayed. Click on INSTALL.
+    - Restart Home Assistant
+  - Manual
+    - Clone the repository
 
-```bash
-git clone https://github.com/PhoenixR49/hass-huggingchat-conversation
-```
+      - ```bash
+        git clone https://github.com/PhoenixR49/hass-huggingchat-conversation
+        ```
 
-- Add custom component to your Home Assistant installation.
-- Setup the integration with your HuggingFace email and password.
+    - Add the contents of the custom_component folder to the following path in your Home Assistant configuration: `/config/custom_components`.
+    - Restart Home Assistant
 
 ## Credits
 
