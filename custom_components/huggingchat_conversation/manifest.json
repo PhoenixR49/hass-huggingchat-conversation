@@ -2,7 +2,7 @@
   "codeowners": ["@PhoenixR49"],
   "config_flow": true,
   "dependencies": ["conversation"],
-  "documentation": "https://github.com/PhoenixR49/ha-huggingchat-conversation/",
+  "documentation": "https://github.com/PhoenixR49/hass-huggingchat-conversation/",
   "domain": "huggingchat_conversation",
   "iot_class": "cloud_polling",
   "name": "HuggingChat Conversation",
