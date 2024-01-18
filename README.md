@@ -29,6 +29,16 @@ Conversation support for Home Assistant using HuggingChat.
     - Add the contents of the custom_component folder to the following path in your Home Assistant configuration: `/config/custom_components`.
     - Restart Home Assistant
 
+## Star History
+
+<a href="https://star-history.com/#PhoenixR49/hass-huggingchat-conversation&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=PhoenixR49/hass-huggingchat-conversation&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=PhoenixR49/hass-huggingchat-conversation&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=PhoenixR49/hass-huggingchat-conversation&type=Date" />
+  </picture>
+</a>
+
 ## Credits
 
 Many thanks to [Soulter](https://github.com/Soulter) for its [HuggingChat Python API](https://github.com/Soulter/hugging-chat-api).
