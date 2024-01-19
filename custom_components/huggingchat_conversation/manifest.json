@@ -5,6 +5,8 @@
   "issue_tracker": "https://github.com/PhoenixR49/hass-huggingchat-conversation/issues",
   "documentation": "https://github.com/PhoenixR49/hass-huggingchat-conversation/",
   "domain": "huggingchat_conversation",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
   "name": "HuggingChat Conversation",
   "requirements": ["hugchat==0.3.9"],
   "version": "1.1.5"
