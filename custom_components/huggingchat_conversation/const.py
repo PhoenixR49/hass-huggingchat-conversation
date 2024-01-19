@@ -13,16 +13,34 @@ DEFAULT_PROMPT = """This smart home is controlled by Home Assistant.
 An overview of the areas and the devices in this smart home:
 {%- for area in areas() %}
   {%- set area_info = namespace(printed=false) %}
-  {%- for device in area_devices(area) -%}
-    {%- if not device_attr(device, "disabled_by") and not device_attr(device, "entry_type") and device_attr(device, "name") %}
-      {%- if not area_info.printed %}
+  {%- if not area_info.printed %}
 
 {{ area_name(area) }}:
         {%- set area_info.printed = true %}
+  {%- endif %}
+  {%- if area_devices(area) %}
+- Devices:
+    {%- for device in area_devices(area) -%}
+      {%- if not device_attr(device, "disabled_by") and not device_attr(device, "entry_type") and device_attr(device, "name") %}
+  - {{ device_attr(device, "name") }}{% if device_attr(device, "model") and (device_attr(device, "model") | string) not in (device_attr(device, "name") | string) %} ({{ device_attr(device, "model") }}){% endif %}
       {%- endif %}
-- {{ device_attr(device, "name") }}{% if device_attr(device, "model") and (device_attr(device, "model") | string) not in (device_attr(device, "name") | string) %} ({{ device_attr(device, "model") }}){% endif %}
-    {%- endif %}
-  {%- endfor %}
+    {%- endfor %}
+  {%- else %}
+No devices in this area
+  {%- endif %}
+
+  {%- if area_entities(area) %}
+
+- Entities
+    {%- for entity in area_entities(area) | reject('is_hidden_entity') -%}
+      {%- if not entity.is_hidden_entity %}
+  - {{ state_attr(entity, 'friendly_name') }} ({{ entity }}){%- if states(entity) != "unknown" %}: {{ states(entity) }}{% endif %}
+      {%- endif %}
+    {%- endfor %}
+  {%- else %}
+
+No entities in this area
+  {%- endif %}
 {%- endfor %}
 
 Answer the user's questions about the world truthfully.
