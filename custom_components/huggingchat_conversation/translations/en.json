@@ -17,14 +17,7 @@
       "init": {
         "data": {
           "chat_model": "Completion model",
-          "prompt": "Prompt template",
-          "max_tokens": "Maximum tokens to return in response",
-          "top_p": "Top P",
-          "temperature": "Temperature"
-        },
-        "data_description": {
-          "chat_model": "HuggingFace chat_model number.\n\n0 = mistralai/Mixtral-8x7B-Instruct-v0.1\n1 = meta-llama/Llama-2-70b-chat-hf\n2 = codellama/CodeLlama-34b-Instruct-hf\n3 = mistralai/Mistral-7B-Instruct-v0.2\n4 = openchat/openchat-3.5-1210",
-          "temperature": "Creativity/Cautiousness of the model.\nA higher temperature encourages diversity by allowing more unpredictable word choices, while a lower temperature encourages more predictable and conservative choices."
+          "prompt": "Prompt template"
         }
       }
     }

@@ -14,20 +14,10 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import intent, template
 
-from .const import (
-    CONF_CHAT_MODEL,
-    CONF_MAX_TOKENS,
-    CONF_PROMPT,
-    CONF_TEMPERATURE,
-    CONF_TOP_P,
-    DEFAULT_CHAT_MODEL,
-    DEFAULT_MAX_TOKENS,
-    DEFAULT_PROMPT,
-    DEFAULT_TEMPERATURE,
-    DEFAULT_TOP_P,
-)
+from .const import CONF_CHAT_MODEL, CONF_PROMPT, DEFAULT_CHAT_MODEL, DEFAULT_PROMPT
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up HuggingChat Conversation from a config entry."""
@@ -54,7 +44,10 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
     @property
     def attribution(self):
         """Return the attribution."""
-        return {"name": "Powered by HuggingChat", "url": "https://github.com/PhoenixR49/hass-huggingchat-conversation"}
+        return {
+            "name": "Powered by HuggingChat",
+            "url": "https://github.com/PhoenixR49/hass-huggingchat-conversation",
+        }
 
     @property
     def supported_languages(self) -> list[str] | Literal["*"]:
@@ -69,11 +62,10 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         passwd = self.entry.data[CONF_PASSWORD]
         raw_prompt = self.entry.options.get(CONF_PROMPT, DEFAULT_PROMPT)
         model = int(self.entry.options.get(CONF_CHAT_MODEL, DEFAULT_CHAT_MODEL))
-        temperature = self.entry.options.get(CONF_TEMPERATURE, DEFAULT_TEMPERATURE)
-        top_p = self.entry.options.get(CONF_TOP_P, DEFAULT_TOP_P)
-        max_tokens = self.entry.options.get(CONF_MAX_TOKENS, DEFAULT_MAX_TOKENS)
 
-        cookie_path_dir = "./config/custom_components/huggingchat_conversation/cookies_snapshot"
+        cookie_path_dir = (
+            "./config/custom_components/huggingchat_conversation/cookies_snapshot"
+        )
 
         # Log in to huggingface and grant authorization to huggingchat
         sign = Login(email, passwd)
@@ -85,7 +77,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             sign.saveCookiesToDir(cookie_path_dir)
 
         def initialize_chatbot(cookies, model, prompt):
-            return hugchat.ChatBot(cookies=cookies, default_llm=model, system_prompt=prompt)
+            return hugchat.ChatBot(
+                cookies=cookies, default_llm=model, system_prompt=prompt
+            )
 
         try:
             chatbot = await self.hass.async_add_executor_job(
@@ -96,7 +90,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_error(
                 intent.IntentResponseErrorCode.UNKNOWN,
-                f"Sorry, an error occurred when initialising the chat: {err}"
+                f"Sorry, an error occurred when initialising the chat: {err}",
             )
             return conversation.ConversationResult(
                 response=intent_response, conversation_id=user_input.conversation_id
@@ -106,7 +100,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             conversation_id = user_input.conversation_id
             messages = self.history[conversation_id]
 
-            await self.hass.async_add_executor_job(chatbot.get_remote_conversations, True)
+            await self.hass.async_add_executor_job(
+                chatbot.get_remote_conversations, True
+            )
             conversation_object = chatbot.get_conversation_from_id(conversation_id)
 
             chatbot.change_conversation(conversation_object)
@@ -116,10 +112,15 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             conversation_id = info.id
 
             try:
-                await self.hass.async_add_executor_job(chatbot.delete_conversation, info)
+                await self.hass.async_add_executor_job(
+                    chatbot.delete_conversation, info
+                )
                 prompt = self._async_generate_prompt(raw_prompt)
                 chatbot = await self.hass.async_add_executor_job(
-                    initialize_chatbot, cookies.get_dict(), model, prompt,
+                    initialize_chatbot,
+                    cookies.get_dict(),
+                    model,
+                    prompt,
                 )
             except TemplateError as err:
                 _LOGGER.error("Error rendering prompt: %s", err)
@@ -135,7 +136,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             info = await self.hass.async_add_executor_job(chatbot.get_conversation_info)
             conversation_id = info.id
 
-            await self.hass.async_add_executor_job(chatbot.get_remote_conversations, True)
+            await self.hass.async_add_executor_job(
+                chatbot.get_remote_conversations, True
+            )
             chatbot.change_conversation(info)
 
             messages = [{"role": "system", "content": prompt}]
@@ -145,7 +148,10 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
         try:
-            result = await self.hass.async_add_executor_job(str, chatbot.query(text=user_input.text, temperature=temperature, top_p=top_p, max_new_tokens=max_tokens))
+            result = await self.hass.async_add_executor_job(
+                str,
+                chatbot.query(text=user_input.text),
+            )
         except hugchat.exceptions.ChatError as err:
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_error(

@@ -6,6 +6,7 @@ import types
 from types import MappingProxyType
 from typing import Any
 
+from hugchat import hugchat
 from hugchat.login import Login
 import voluptuous as vol
 
@@ -13,8 +14,8 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import (
-    NumberSelector,
-    NumberSelectorConfig,
+    SelectSelector,
+    SelectSelectorConfig,
     TemplateSelector,
     TextSelector,
     TextSelectorConfig,
@@ -24,18 +25,12 @@ from homeassistant.helpers.selector import (
 from .const import (
     CONF_CHAT_MODEL,
     CONF_EMAIL,
-    CONF_MAX_TOKENS,
     CONF_PASSWORD,
     CONF_PROMPT,
-    CONF_TEMPERATURE,
-    CONF_TOP_P,
     DEFAULT_CHAT_MODEL,
     DEFAULT_EMAIL,
-    DEFAULT_MAX_TOKENS,
     DEFAULT_PASSWORD,
     DEFAULT_PROMPT,
-    DEFAULT_TEMPERATURE,
-    DEFAULT_TOP_P,
     DOMAIN,
 )
 
@@ -47,9 +42,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
             TextSelectorConfig(type=TextSelectorType.EMAIL, autocomplete="email")
         ),
         vol.Required(CONF_PASSWORD): TextSelector(
-            TextSelectorConfig(
-                type=TextSelectorType.PASSWORD, autocomplete="password"
-            )
+            TextSelectorConfig(type=TextSelectorType.PASSWORD, autocomplete="password")
         ),
     }
 )
@@ -60,23 +53,23 @@ DEFAULT_OPTIONS = types.MappingProxyType(
         CONF_PASSWORD: DEFAULT_PASSWORD,
         CONF_CHAT_MODEL: DEFAULT_CHAT_MODEL,
         CONF_PROMPT: DEFAULT_PROMPT,
-        CONF_MAX_TOKENS: DEFAULT_MAX_TOKENS,
-        CONF_TOP_P: DEFAULT_TOP_P,
-        CONF_TEMPERATURE: DEFAULT_TEMPERATURE,
     }
 )
 
+cookie_path_dir = (
+    "./config/custom_components/huggingchat_conversation/cookies_snapshot"
+)
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
     """Validate the user input allows us to connect.
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
-    # email = data[CONF_EMAIL]
-    # passwd = data[CONF_PASSWORD]
 
     # Log in to huggingface and grant authorization to huggingchat
     sign = Login(data[CONF_EMAIL], data[CONF_PASSWORD])
+    sign.saveCookiesToDir(cookie_path_dir)
+
     await hass.async_add_executor_job(sign.login)
 
 
@@ -102,7 +95,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.exception("Unexpected exception")
             errors["base"] = "invalid_auth"
         else:
-            return self.async_create_entry(title="HuggingChat Conversation", data=user_input)
+            return self.async_create_entry(
+                title="HuggingChat Conversation", data=user_input
+            )
 
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
@@ -124,20 +119,42 @@ class OptionsFlow(config_entries.OptionsFlow):
         self.config_entry = config_entry
 
     async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
+        self, user_input: dict[str, str] | None = None
     ) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
-            return self.async_create_entry(title="HuggingChat Conversation", data=user_input)
-        schema = huggingchat_config_option_schema(self.config_entry.options)
+            return self.async_create_entry(
+                title="HuggingChat Conversation", data=user_input
+            )
+        schema = await huggingchat_config_option_schema(self, self.config_entry.options)
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(schema),
         )
 
 
-def huggingchat_config_option_schema(options: MappingProxyType[str, Any]) -> dict:
+async def huggingchat_config_option_schema(
+    self, options: MappingProxyType[str, Any]
+) -> dict:
     """Return a schema for HuggingChat completion options."""
+
+    def initialize_chatbot(cookies):
+        return hugchat.ChatBot(cookies=cookies)
+
+    email = self.config_entry.data[CONF_EMAIL]
+    try:
+        sign = Login(email, "")
+        cookies = sign.loadCookiesFromDir(cookie_path_dir)
+        chatbot = await self.hass.async_add_executor_job(initialize_chatbot, cookies)
+
+        modelObj = await self.hass.async_add_executor_job(chatbot.get_remote_llms)
+        models = []
+        for idx, model in enumerate(modelObj):
+            models.append({"label": model.id, "value": str(idx)})
+
+    except hugchat.exceptions.ChatBotInitError:
+        models = [{"label": "An error occurred", "value": "0"}]
+
     if not options:
         options = DEFAULT_OPTIONS
     return {
@@ -145,25 +162,10 @@ def huggingchat_config_option_schema(options: MappingProxyType[str, Any]) -> dic
             CONF_CHAT_MODEL,
             description={"suggested_value": options[CONF_CHAT_MODEL]},
             default=DEFAULT_CHAT_MODEL,
-        ): NumberSelector(NumberSelectorConfig(min=0, max=4, step=1)),
+        ): SelectSelector(SelectSelectorConfig(options=models, mode="dropdown")),
         vol.Optional(
             CONF_PROMPT,
             description={"suggested_value": options[CONF_PROMPT]},
             default=DEFAULT_PROMPT,
         ): TemplateSelector(),
-        vol.Optional(
-            CONF_MAX_TOKENS,
-            description={"suggested_value": options[CONF_MAX_TOKENS]},
-            default=DEFAULT_MAX_TOKENS,
-        ): int,
-        vol.Optional(
-            CONF_TOP_P,
-            description={"suggested_value": options[CONF_TOP_P]},
-            default=DEFAULT_TOP_P,
-        ): NumberSelector(NumberSelectorConfig(min=0, max=1, step=0.05)),
-        vol.Optional(
-            CONF_TEMPERATURE,
-            description={"suggested_value": options[CONF_TEMPERATURE]},
-            default=DEFAULT_TEMPERATURE,
-        ): NumberSelector(NumberSelectorConfig(min=0, max=1, step=0.05)),
     }

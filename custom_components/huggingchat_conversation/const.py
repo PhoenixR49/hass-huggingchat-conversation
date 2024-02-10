@@ -47,9 +47,3 @@ Answer the user's questions about the world truthfully.
 
 If the user wants to control a device, reject the request and suggest using the Home Assistant app.
 """
-CONF_MAX_TOKENS = "max_tokens"
-DEFAULT_MAX_TOKENS = 150
-CONF_TOP_P = "top_p"
-DEFAULT_TOP_P = 1
-CONF_TEMPERATURE = "temperature"
-DEFAULT_TEMPERATURE = 0.5
