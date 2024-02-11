@@ -6,7 +6,7 @@ DEFAULT_EMAIL = "YOUR_EMAIL"
 CONF_PASSWORD = "password"
 DEFAULT_PASSWORD = "YOUR_PASSWORD"
 CONF_CHAT_MODEL = "chat_model"
-DEFAULT_CHAT_MODEL = 0
+DEFAULT_CHAT_MODEL = "0"
 CONF_PROMPT = "prompt"
 DEFAULT_PROMPT = """This smart home is controlled by Home Assistant.
 
@@ -49,3 +49,9 @@ You must speak in the user's language unless they ask you to speak in another on
 
 If the user wants to control a device, reject the request and suggest using the Home Assistant app.
 """
+DEFAULT_WEB_SEARCH = False
+CONF_WEB_SEARCH = "web_search"
+DEFAULT_WEB_SEARCH_ENGINE = "ddg"
+CONF_WEB_SEARCH_ENGINE = "web_search_engine"
+DEFAULT_WEB_SEARCH_PROMPT = "Here is some information from DuckDuckgo (please quote this information when using this product). Today is {{ states('sensor.date') }}. Please do not quote dates unless they appear in the results."
+CONF_WEB_SEARCH_PROMPT = "web_search_prompt"

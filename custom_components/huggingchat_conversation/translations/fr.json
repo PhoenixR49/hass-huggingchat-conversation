@@ -17,7 +17,10 @@
       "init": {
         "data": {
           "chat_model": "Modèle de complétion",
-          "prompt": "Prompt Template (modèle d'invite)"
+          "prompt": "Modèle d'invite",
+          "web_search": "Activer la recherche Web",
+          "web_search_engine": "Moteur de recherche",
+          "web_search_prompt": "Modèle d'invite de recherche"
         }
       }
     }

@@ -17,7 +17,10 @@
       "init": {
         "data": {
           "chat_model": "Completion model",
-          "prompt": "Prompt template"
+          "prompt": "Prompt template",
+          "web_search": "Enable Web search",
+          "web_search_engine": "Search engine",
+          "web_search_prompt": "Search prompt template"
         }
       }
     }
