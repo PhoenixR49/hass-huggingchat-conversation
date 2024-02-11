@@ -41,6 +41,6 @@ Conversation support for Home Assistant using HuggingChat.
 
 ## Credits
 
-Many thanks to [Soulter](https://github.com/Soulter) for its [HuggingChat Python API](https://github.com/Soulter/hugging-chat-api).
+Many thanks to [Soulter](https://github.com/Soulter) for its [HuggingChat Python API](https://github.com/Soulter/hugging-chat-api) and to [deedy5](https://github.com/deedy5) for its [DuckDuckGo API](https://github.com/deedy5/duckduckgo_search).
 
 Integration built with the [OpenAI Conversation](https://github.com/home-assistant/core/blob/dev/homeassistant/components/openai_conversation) by [Paulus Schoutsen](https://github.com/balloob) and the [OpenAI Custom Conversation](https://github.com/drndos/hass-openai-custom-conversation) by [Filip Bednárik](https://github.com/drndos/).
