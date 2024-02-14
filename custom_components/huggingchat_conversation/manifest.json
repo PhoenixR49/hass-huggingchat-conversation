@@ -8,6 +8,6 @@
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "name": "HuggingChat Conversation",
-  "requirements": ["hugchat==0.3.11", "duckduckgo-search==4.4.2"],
+  "requirements": ["hugchat==0.3.11", "duckduckgo-search==3.9.6"],
   "version": "1.2.0"
 }
