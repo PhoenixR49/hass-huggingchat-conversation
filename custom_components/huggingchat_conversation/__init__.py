@@ -127,7 +127,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             )
             conversation_object = chatbot.get_conversation_from_id(conversation_id)
 
-            chatbot.change_conversation(conversation_object)
+            await self.hass.async_add_executor_job(chatbot.change_conversation, conversation_object)
         else:
             # Set conversation_id to the HuggingChat conversation ID
             info = await self.hass.async_add_executor_job(chatbot.get_conversation_info)
@@ -181,7 +181,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             await self.hass.async_add_executor_job(
                 chatbot.get_remote_conversations, True
             )
-            chatbot.change_conversation(info)
+            await self.hass.async_add_executor_job(chatbot.change_conversation, info)
 
             messages = [{"role": "system", "content": prompt}]
 
