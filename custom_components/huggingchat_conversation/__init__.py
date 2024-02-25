@@ -16,12 +16,16 @@ from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import intent, template
 
 from .const import (
+    CONF_ASSISTANT_NAME,
     CONF_CHAT_MODEL,
+    CONF_ASSISTANTS,
     CONF_PROMPT,
     CONF_WEB_SEARCH,
     CONF_WEB_SEARCH_ENGINE,
     CONF_WEB_SEARCH_PROMPT,
+    DEFAULT_ASSISTANT_NAME,
     DEFAULT_CHAT_MODEL,
+    DEFAULT_ASSISTANTS,
     DEFAULT_PROMPT,
     DEFAULT_WEB_SEARCH,
     DEFAULT_WEB_SEARCH_ENGINE,
@@ -77,6 +81,12 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         passwd = self.entry.data[CONF_PASSWORD]
         model = int(self.entry.options.get(CONF_CHAT_MODEL, DEFAULT_CHAT_MODEL))
         raw_prompt = self.entry.options.get(CONF_PROMPT, DEFAULT_PROMPT)
+        assistants = self.entry.options.get(
+            CONF_ASSISTANTS, DEFAULT_ASSISTANTS
+        )
+        assistant_name = self.entry.options.get(
+            CONF_ASSISTANT_NAME, DEFAULT_ASSISTANT_NAME
+        )
         web_search = self.entry.options.get(CONF_WEB_SEARCH, DEFAULT_WEB_SEARCH)
         web_search_engine = self.entry.options.get(
             CONF_WEB_SEARCH_ENGINE, DEFAULT_WEB_SEARCH_ENGINE
@@ -95,8 +105,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         try:
             cookies = sign.loadCookiesFromDir(cookie_path_dir)
         except Exception:
-            cookies = await self.hass.async_add_executor_job(sign.login)
-            sign.saveCookiesToDir(cookie_path_dir)
+            cookies = await self.hass.async_add_executor_job(
+                sign.login, cookie_dir_path=cookie_path_dir, save_cookies=True
+            )
 
         def initialize_chatbot(cookies, model, prompt):
             return hugchat.ChatBot(
@@ -127,7 +138,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             )
             conversation_object = chatbot.get_conversation_from_id(conversation_id)
 
-            await self.hass.async_add_executor_job(chatbot.change_conversation, conversation_object)
+            await self.hass.async_add_executor_job(
+                chatbot.change_conversation, conversation_object
+            )
         else:
             # Set conversation_id to the HuggingChat conversation ID
             info = await self.hass.async_add_executor_job(chatbot.get_conversation_info)
@@ -190,6 +203,10 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
         try:
+            if assistants is True:
+                assistant = await self.hass.async_add_executor_job(chatbot.search_assistant, assistant_name)
+                await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant)
+
             if web_search & (web_search_engine == "google"):
                 result = await self.hass.async_add_executor_job(
                     str,
