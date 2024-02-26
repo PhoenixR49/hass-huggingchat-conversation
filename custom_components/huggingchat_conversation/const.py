@@ -50,7 +50,7 @@ You must speak in the user's language unless they ask you to speak in another on
 If the user wants to control a device, reject the request and suggest using the Home Assistant app.
 """
 DEFAULT_ASSISTANTS = False
-CONF_ASSISTANTS = "assistants"
+CONF_ASSISTANTS = "enable_assistants"
 DEFAULT_ASSISTANT_NAME = "ChatGpt"
 CONF_ASSISTANT_NAME = "assistant_name"
 DEFAULT_WEB_SEARCH = False

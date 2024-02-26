@@ -18,7 +18,7 @@
         "data": {
           "chat_model": "Completion model",
           "prompt": "Prompt template",
-          "assistants": "Enable assistants",
+          "enable_assistants": "Enable assistants",
           "assistant_name": "Assistant name",
           "web_search": "Enable Web search",
           "web_search_engine": "Search engine",

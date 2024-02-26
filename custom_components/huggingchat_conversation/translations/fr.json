@@ -18,7 +18,7 @@
         "data": {
           "chat_model": "Modèle de complétion",
           "prompt": "Modèle d'invite",
-          "assistants": "Activer les assistants",
+          "enable_assistants": "Activer les assistants",
           "assistant_name": "Nom de l'assistant",
           "web_search": "Activer la recherche Web",
           "web_search_engine": "Moteur de recherche",
