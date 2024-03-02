@@ -174,8 +174,8 @@ async def huggingchat_config_option_schema(
         _LOGGER.error(err)
         models = [{"label": "An error has occurred", "value": "0"}]
 
-    if not options:
-        options = DEFAULT_OPTIONS
+    options = {**DEFAULT_OPTIONS, **options}
+
     return {
         vol.Optional(
             CONF_CHAT_MODEL,
