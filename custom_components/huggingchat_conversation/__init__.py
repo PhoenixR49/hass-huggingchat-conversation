@@ -96,7 +96,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         )
 
         cookie_path_dir = (
-            "./config/custom_components/huggingchat_conversation/cookies_snapshot"
+            "./config/custom_components/huggingchat_conversation/cookies/"
         )
 
         # Log in to huggingface and grant authorization to huggingchat
@@ -106,7 +106,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             cookies = sign.loadCookiesFromDir(cookie_path_dir)
         except Exception:
             cookies = await self.hass.async_add_executor_job(
-                sign.login, cookie_dir_path=cookie_path_dir, save_cookies=True
+                sign.login, cookie_path_dir, True
             )
 
         def initialize_chatbot(cookies, model, prompt):
