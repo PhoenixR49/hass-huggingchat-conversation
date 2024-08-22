@@ -7,7 +7,7 @@ Conversation support for Home Assistant using HuggingChat.
 [![Community forum](https://img.shields.io/badge/community-forum-green?link=https%3A%2F%2Fcommunity.home-assistant.io%2Ft%2Fhuggingchat-integration%2F668518&style=for-the-badge)](https://community.home-assistant.io/t/huggingchat-integration/668518)
 [![GitHub License](https://img.shields.io/github/license/PhoenixR49/hass-huggingchat-conversation?style=for-the-badge)](https://github.com/PhoenixR49/hass-huggingchat-conversation?tab=GPL-3.0-1-ov-file#readme)
 [![GitHub Release](https://img.shields.io/github/v/release/PhoenixR49/hass-huggingchat-conversation?style=for-the-badge)](https://github.com/PhoenixR49/hass-huggingchat-conversation/releases)
-[![installations](https://img.shields.io/endpoint?url=https://ha-analytics.vaskivskyi.com/badges/huggingchat_conversation/total.json&style=for-the-badge&color=blue)](https://github.com/Vaskivskyi/ha-analytics)
+![installations](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fanalytics.home-assistant.io%2Fcustom_integrations.json&query=huggingchat_conversation.total&style=for-the-badge&logo=home-assistant&label=Installations)
 
 ## Installation
 
