@@ -1,13 +1,14 @@
 {
+  "domain": "huggingchat_conversation",
+  "name": "HuggingChat Conversation",
+  "after_dependencies": ["assist_pipeline", "intent"],
   "codeowners": ["@PhoenixR49"],
   "config_flow": true,
   "dependencies": ["conversation"],
-  "issue_tracker": "https://github.com/PhoenixR49/hass-huggingchat-conversation/issues",
-  "documentation": "https://github.com/PhoenixR49/hass-huggingchat-conversation/",
-  "domain": "huggingchat_conversation",
+  "documentation": "https://github.com/PhoenixR49/hass-huggingchat-conversation",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "name": "HuggingChat Conversation",
+  "issue_tracker": "https://github.com/PhoenixR49/hass-huggingchat-conversation/issues",
   "requirements": ["hugchat==0.4.8", "duckduckgo-search==3.9.11"],
   "version": "1.3.4"
 }
