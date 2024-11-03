@@ -8,6 +8,7 @@ from typing import Any
 
 from hugchat import hugchat
 from hugchat.login import Login
+
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -29,18 +30,12 @@ from .const import (
     CONF_EMAIL,
     CONF_PASSWORD,
     CONF_PROMPT,
-    CONF_WEB_SEARCH,
-    CONF_WEB_SEARCH_ENGINE,
-    CONF_WEB_SEARCH_PROMPT,
     DEFAULT_ASSISTANT_NAME,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_EMAIL,
     DEFAULT_PASSWORD,
     DEFAULT_PROMPT,
-    DEFAULT_WEB_SEARCH,
-    DEFAULT_WEB_SEARCH_ENGINE,
-    DEFAULT_WEB_SEARCH_PROMPT,
     DOMAIN,
 )
 
@@ -65,26 +60,19 @@ DEFAULT_OPTIONS = types.MappingProxyType(
         CONF_PROMPT: DEFAULT_PROMPT,
         CONF_ASSISTANTS: DEFAULT_ASSISTANTS,
         CONF_ASSISTANT_NAME: DEFAULT_ASSISTANT_NAME,
-        CONF_WEB_SEARCH: DEFAULT_WEB_SEARCH,
-        CONF_WEB_SEARCH_ENGINE: DEFAULT_WEB_SEARCH_ENGINE,
-        CONF_WEB_SEARCH_PROMPT: DEFAULT_WEB_SEARCH_PROMPT,
     }
 )
 
 cookie_path_dir = "./config/custom_components/huggingchat_conversation/cookies_snapshot"
-
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
     """Validate the user input allows us to connect.
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
-
     # Log in to huggingface and grant authorization to huggingchat
     sign = Login(data[CONF_EMAIL], data[CONF_PASSWORD])
-
     await hass.async_add_executor_job(sign.login)
-
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for HuggingChat Conversation."""
@@ -123,7 +111,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Create the options flow."""
         return OptionsFlow(config_entry)
 
-
 class OptionsFlow(config_entries.OptionsFlow):
     """HuggingChat config flow options handler."""
 
@@ -145,7 +132,6 @@ class OptionsFlow(config_entries.OptionsFlow):
             data_schema=vol.Schema(schema),
         )
 
-
 async def huggingchat_config_option_schema(
     self, options: MappingProxyType[str, Any]
 ) -> dict:
@@ -159,17 +145,14 @@ async def huggingchat_config_option_schema(
     try:
         sign = Login(email, passwd)
         cookies = await self.hass.async_add_executor_job(sign.login)
-
         sign.saveCookiesToDir(cookie_path_dir)
         chatbot = await self.hass.async_add_executor_job(
             initialize_chatbot, cookies.get_dict()
         )
-
         modelObj = await self.hass.async_add_executor_job(chatbot.get_remote_llms)
         models = []
         for idx, model in enumerate(modelObj):
             models.append({"label": model.id, "value": str(idx)})
-
     except Exception as err:
         _LOGGER.error(err)
         models = [{"label": "An error has occurred", "value": "0"}]
@@ -191,28 +174,6 @@ async def huggingchat_config_option_schema(
             description={"suggested_value": options[CONF_ASSISTANT_NAME]},
             default=DEFAULT_ASSISTANT_NAME,
         ): str,
-        vol.Optional(
-            CONF_WEB_SEARCH,
-            description={"suggested_value": options[CONF_WEB_SEARCH]},
-            default=DEFAULT_WEB_SEARCH,
-        ): bool,
-        vol.Optional(
-            CONF_WEB_SEARCH_ENGINE,
-            description={"suggested_value": options[CONF_WEB_SEARCH_ENGINE]},
-        ): SelectSelector(
-            SelectSelectorConfig(
-                options=[
-                    {"label": "DuckDuckGo", "value": "ddg"},
-                    {"label": "Google", "value": "google"},
-                ],
-                mode="list",
-            )
-        ),
-        vol.Optional(
-            CONF_WEB_SEARCH_PROMPT,
-            description={"suggested_value": options[CONF_WEB_SEARCH_PROMPT]},
-            default=DEFAULT_WEB_SEARCH_PROMPT,
-        ): TemplateSelector(),
         vol.Optional(
             CONF_PROMPT,
             description={"suggested_value": options[CONF_PROMPT]},
