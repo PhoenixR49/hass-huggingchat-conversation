@@ -35,7 +35,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 # Uncomment it for development
-_LOGGER.setLevel("DEBUG")
+# _LOGGER.setLevel("DEBUG")
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -96,7 +96,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         )
 
         cookie_path_dir = (
-            "./config/custom_components/huggingchat_conversation/cookies/"
+            "./config/custom_components/huggingchat_conversation/cookies_snapshot/"
         )
 
         # Log in to huggingface and grant authorization to huggingchat
@@ -154,16 +154,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
                 if web_search & (web_search_engine == "ddg"):
 
                     async def aget_results():
-                        async with AsyncDDGS() as ddgs:
-                            results = "".join(
-                                [
-                                    f"{r.get('title')}: {r.get('body')}\n"
-                                    async for r in ddgs.text(
-                                        user_input.text, max_results=5
-                                    )
-                                ]
-                            )
-                            return results
+                        results = await AsyncDDGS().atext(user_input.text, max_results=5)
+                        formatted_results = [f"{r.get('title')}: {r.get('body')}\n" for r in results]
+                        return "".join(formatted_results)
 
                     results = await aget_results()
                     raw_prompt = (
@@ -203,19 +196,19 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
         try:
-            if assistants is True:
+            if assistants:
                 assistant = await self.hass.async_add_executor_job(chatbot.search_assistant, assistant_name)
                 await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant)
 
             if web_search & (web_search_engine == "google"):
                 result = await self.hass.async_add_executor_job(
                     str,
-                    chatbot.query(text=user_input.text, web_search=True),
+                    chatbot.chat(user_input.text, web_search=True),
                 )
             else:
                 result = await self.hass.async_add_executor_job(
                     str,
-                    chatbot.query(text=user_input.text),
+                    chatbot.chat(user_input.text),
                 )
         except hugchat.exceptions.ChatError as err:
             intent_response = intent.IntentResponse(language=user_input.language)
