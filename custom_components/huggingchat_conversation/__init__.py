@@ -76,7 +76,11 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         assistants = self.entry.options.get(CONF_ASSISTANTS, DEFAULT_ASSISTANTS)
         assistant_name = self.entry.options.get(CONF_ASSISTANT_NAME, DEFAULT_ASSISTANT_NAME)
 
-        cookie_path_dir = "./config/custom_components/huggingchat_conversation/cookies/"
+
+        cookie_path_dir = (
+            "./config/custom_components/huggingchat_conversation/cookies_snapshot/"
+        )
+
 
         # Log in to huggingface and grant authorization to huggingchat
         sign = Login(email, passwd)
@@ -126,6 +130,24 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             conversation_id = info.id
 
             try:
+
+                await self.hass.async_add_executor_job(
+                    chatbot.delete_conversation, info
+                )
+
+                if web_search & (web_search_engine == "ddg"):
+
+                    async def aget_results():
+                        results = await AsyncDDGS().atext(user_input.text, max_results=5)
+                        formatted_results = [f"{r.get('title')}: {r.get('body')}\n" for r in results]
+                        return "".join(formatted_results)
+
+                    results = await aget_results()
+                    raw_prompt = (
+                        web_search_prompt + ":\n" + results + "\n\n" + raw_prompt
+                    )
+
+
                 prompt = self._async_generate_prompt(raw_prompt)
                 chatbot = await self.hass.async_add_executor_job(
                     initialize_chatbot,
@@ -163,6 +185,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
                 assistant = await self.hass.async_add_executor_job(chatbot.search_assistant, assistant_name)
                 await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant)
 
+
             # Use the chat() method instead of query()
             message = await self.hass.async_add_executor_job(
                 chatbot.chat, user_input.text
@@ -170,6 +193,18 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
 
             # Wait for the final response
             result = await self.hass.async_add_executor_job(message.wait_until_done)
+
+            if web_search & (web_search_engine == "google"):
+                result = await self.hass.async_add_executor_job(
+                    str,
+                    chatbot.chat(user_input.text, web_search=True),
+                )
+            else:
+                result = await self.hass.async_add_executor_job(
+                    str,
+                    chatbot.chat(user_input.text),
+                )
+
         except hugchat.exceptions.ChatError as err:
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_error(
