@@ -30,12 +30,18 @@ from .const import (
     CONF_EMAIL,
     CONF_PASSWORD,
     CONF_PROMPT,
+    CONF_WEB_SEARCH,
+    CONF_WEB_SEARCH_ENGINE,
+    CONF_WEB_SEARCH_PROMPT,
     DEFAULT_ASSISTANT_NAME,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_EMAIL,
     DEFAULT_PASSWORD,
     DEFAULT_PROMPT,
+    DEFAULT_WEB_SEARCH,
+    DEFAULT_WEB_SEARCH_ENGINE,
+    DEFAULT_WEB_SEARCH_PROMPT,
     DOMAIN,
 )
 
@@ -60,6 +66,9 @@ DEFAULT_OPTIONS = types.MappingProxyType(
         CONF_PROMPT: DEFAULT_PROMPT,
         CONF_ASSISTANTS: DEFAULT_ASSISTANTS,
         CONF_ASSISTANT_NAME: DEFAULT_ASSISTANT_NAME,
+        CONF_WEB_SEARCH: DEFAULT_WEB_SEARCH,
+        CONF_WEB_SEARCH_ENGINE: DEFAULT_WEB_SEARCH_ENGINE,
+        CONF_WEB_SEARCH_PROMPT: DEFAULT_WEB_SEARCH_PROMPT,
     }
 )
 
@@ -174,6 +183,28 @@ async def huggingchat_config_option_schema(
             description={"suggested_value": options[CONF_ASSISTANT_NAME]},
             default=DEFAULT_ASSISTANT_NAME,
         ): str,
+        vol.Optional(
+            CONF_WEB_SEARCH,
+            description={"suggested_value": options[CONF_WEB_SEARCH]},
+            default=DEFAULT_WEB_SEARCH,
+        ): bool,
+        vol.Optional(
+            CONF_WEB_SEARCH_ENGINE,
+            description={"suggested_value": options[CONF_WEB_SEARCH_ENGINE]},
+        ): SelectSelector(
+            SelectSelectorConfig(
+                options=[
+                    {"label": "DuckDuckGo", "value": "ddg"},
+                    {"label": "Google", "value": "google"},
+                ],
+                mode="dropdown",
+            )
+        ),
+        vol.Optional(
+            CONF_WEB_SEARCH_PROMPT,
+            description={"suggested_value": options[CONF_WEB_SEARCH_PROMPT]},
+            default=DEFAULT_WEB_SEARCH_PROMPT,
+        ): TemplateSelector(),
         vol.Optional(
             CONF_PROMPT,
             description={"suggested_value": options[CONF_PROMPT]},
