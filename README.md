@@ -2,7 +2,9 @@
 
 Conversation support for Home Assistant using HuggingChat.
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+[![HACS Action](https://github.com/PhoenixR49/hass-huggingchat-conversation/actions/workflows/hacs.yml/badge.svg)](https://github.com/PhoenixR49/hass-huggingchat-conversation/actions/workflows/hacs.yml)
+[![Validate with hassfest](https://github.com/PhoenixR49/hass-huggingchat-conversation/actions/workflows/hassfest.yml/badge.svg)](https://github.com/PhoenixR49/hass-huggingchat-conversation/actions/workflows/hassfest.yml)
+[![Pylint](https://github.com/PhoenixR49/hass-huggingchat-conversation/actions/workflows/pylint.yml/badge.svg)](https://github.com/PhoenixR49/hass-huggingchat-conversation/actions/workflows/pylint.yml)
 
 [![Community forum](https://img.shields.io/badge/community-forum-green?link=https%3A%2F%2Fcommunity.home-assistant.io%2Ft%2Fhuggingchat-integration%2F668518&style=for-the-badge)](https://community.home-assistant.io/t/huggingchat-integration/668518)
 [![GitHub License](https://img.shields.io/github/license/PhoenixR49/hass-huggingchat-conversation?style=for-the-badge)](https://github.com/PhoenixR49/hass-huggingchat-conversation?tab=GPL-3.0-1-ov-file#readme)
