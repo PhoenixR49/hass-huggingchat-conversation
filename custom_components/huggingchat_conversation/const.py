@@ -8,9 +8,9 @@ DEFAULT_PASSWORD = "YOUR_PASSWORD"
 CONF_CHAT_MODEL = "chat_model"
 DEFAULT_CHAT_MODEL = "0"
 CONF_PROMPT = "prompt"
-DEFAULT_PROMPT = """This smart home is controlled by Home Assistant.
+DEFAULT_PROMPT = """Dieses Smart Home wird per Home Assistant gesteuert.
 
-An overview of the areas and the devices in this smart home:
+Eine Übersicht über die Bereiche und Geräte in diesem Smart Home:
 {%- for area in areas() %}
   {%- set area_info = namespace(printed=false) %}
   {%- if not area_info.printed %}
@@ -32,9 +32,9 @@ No devices in this area
   {%- if area_entities(area) %}
 
 - Entities
-    {%- for entity in area_entities(area) | reject('is_hidden_entity') -%}
-      {%- if not entity.is_hidden_entity %}
-  - {{ state_attr(entity, 'friendly_name') }} ({{ entity }}){%- if states(entity) != "unknown" %}: {{ states(entity) }}{% endif %}
+    {%- for entity in area_entities(area) -%}
+      {%- if entity is not string and not entity.is_hidden_entity %}
+  - {{ state_attr(entity, 'friendly_name') }} ({{ entity.entity_id }}){%- if states(entity.entity_id) != "unknown" %}: {{ states(entity.entity_id) }}{% endif %}
       {%- endif %}
     {%- endfor %}
   {%- else %}
@@ -43,19 +43,11 @@ No entities in this area
   {%- endif %}
 {%- endfor %}
 
-Answer the user's questions about the world truthfully.
-Make sure your text is TTS-readable, and spell out numbers, dates and currencies.
-You must speak in the user's language unless they ask you to speak in another one.
-
-If the user wants to control a device, reject the request and suggest using the Home Assistant app.
+Beantworten Sie die Fragen des Benutzers über die Welt wahrheitsgemäß.
+Stellen Sie sicher, dass Ihr Text TTS-lesbar ist, und buchstabieren Sie Zahlen, Daten und Währungen.
+Sie müssen in der Sprache des Benutzers sprechen.
 """
 DEFAULT_ASSISTANTS = False
 CONF_ASSISTANTS = "enable_assistants"
 DEFAULT_ASSISTANT_NAME = "ChatGpt"
 CONF_ASSISTANT_NAME = "assistant_name"
-DEFAULT_WEB_SEARCH = False
-CONF_WEB_SEARCH = "web_search"
-DEFAULT_WEB_SEARCH_ENGINE = "ddg"
-CONF_WEB_SEARCH_ENGINE = "web_search_engine"
-DEFAULT_WEB_SEARCH_PROMPT = "Here is some information from DuckDuckgo (please quote this information when using this product). Today is {{ states('sensor.date') }}. Please do not quote dates unless they appear in the results."
-CONF_WEB_SEARCH_PROMPT = "web_search_prompt"
