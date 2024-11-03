@@ -19,10 +19,16 @@ from .const import (
     CONF_ASSISTANTS,
     CONF_CHAT_MODEL,
     CONF_PROMPT,
+    CONF_WEB_SEARCH,
+    CONF_WEB_SEARCH_ENGINE,
+    CONF_WEB_SEARCH_PROMPT,
     DEFAULT_ASSISTANT_NAME,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_PROMPT,
+    DEFAULT_WEB_SEARCH,
+    DEFAULT_WEB_SEARCH_ENGINE,
+    DEFAULT_WEB_SEARCH_PROMPT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -75,12 +81,11 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         raw_prompt = self.entry.options.get(CONF_PROMPT, DEFAULT_PROMPT)
         assistants = self.entry.options.get(CONF_ASSISTANTS, DEFAULT_ASSISTANTS)
         assistant_name = self.entry.options.get(CONF_ASSISTANT_NAME, DEFAULT_ASSISTANT_NAME)
+        web_search = self.entry.options.get(CONF_WEB_SEARCH, DEFAULT_WEB_SEARCH)
+        web_search_engine = self.entry.options.get(CONF_WEB_SEARCH_ENGINE, DEFAULT_WEB_SEARCH_ENGINE)
+        raw_web_search_prompt = self.entry.options.get(CONF_WEB_SEARCH_PROMPT, DEFAULT_WEB_SEARCH_PROMPT)
 
-
-        cookie_path_dir = (
-            "./config/custom_components/huggingchat_conversation/cookies_snapshot/"
-        )
-
+        cookie_path_dir = "./config/custom_components/huggingchat_conversation/cookies/"
 
         # Log in to huggingface and grant authorization to huggingchat
         sign = Login(email, passwd)
@@ -130,24 +135,6 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             conversation_id = info.id
 
             try:
-
-                await self.hass.async_add_executor_job(
-                    chatbot.delete_conversation, info
-                )
-
-                if web_search & (web_search_engine == "ddg"):
-
-                    async def aget_results():
-                        results = await AsyncDDGS().atext(user_input.text, max_results=5)
-                        formatted_results = [f"{r.get('title')}: {r.get('body')}\n" for r in results]
-                        return "".join(formatted_results)
-
-                    results = await aget_results()
-                    raw_prompt = (
-                        web_search_prompt + ":\n" + results + "\n\n" + raw_prompt
-                    )
-
-
                 prompt = self._async_generate_prompt(raw_prompt)
                 chatbot = await self.hass.async_add_executor_job(
                     initialize_chatbot,
@@ -185,26 +172,13 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
                 assistant = await self.hass.async_add_executor_job(chatbot.search_assistant, assistant_name)
                 await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant)
 
-
-            # Use the chat() method instead of query()
+            web_search_prompt = self._async_generate_prompt(raw_web_search_prompt)
             message = await self.hass.async_add_executor_job(
-                chatbot.chat, user_input.text
+                self._chat_with_web_search, chatbot, user_input.text, web_search, web_search_prompt
             )
 
             # Wait for the final response
             result = await self.hass.async_add_executor_job(message.wait_until_done)
-
-            if web_search & (web_search_engine == "google"):
-                result = await self.hass.async_add_executor_job(
-                    str,
-                    chatbot.chat(user_input.text, web_search=True),
-                )
-            else:
-                result = await self.hass.async_add_executor_job(
-                    str,
-                    chatbot.chat(user_input.text),
-                )
-
         except hugchat.exceptions.ChatError as err:
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_error(
@@ -234,17 +208,16 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             response=intent_response, conversation_id=conversation_id
         )
 
+    def _chat_with_web_search(self, chatbot, text, web_search, web_search_prompt):
+        """Helper function to call chat with web search."""
+        return chatbot.chat(text, web_search=web_search, web_search_prompt=web_search_prompt)
+
     def _async_generate_prompt(self, raw_prompt: str) -> str:
         """Generate a prompt for the user."""
-        try:
-            prompt = template.Template(raw_prompt, self.hass).async_render(
-                {
-                    "ha_name": self.hass.config.location_name,
-                },
-                parse_result=False,
-            )
-            _LOGGER.debug("Rendered prompt: %s", prompt)
-            return prompt
-        except TemplateError as err:
-            _LOGGER.error("Error rendering prompt: %s", err)
-            raise
+        return template.Template(raw_prompt, self.hass).async_render(
+            {
+                "ha_name": self.hass.config.location_name,
+            },
+            parse_result=False,
+        )
+		
