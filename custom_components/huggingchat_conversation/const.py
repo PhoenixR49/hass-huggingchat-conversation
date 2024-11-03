@@ -8,9 +8,9 @@ DEFAULT_PASSWORD = "YOUR_PASSWORD"
 CONF_CHAT_MODEL = "chat_model"
 DEFAULT_CHAT_MODEL = "0"
 CONF_PROMPT = "prompt"
-DEFAULT_PROMPT = """Dieses Smart Home wird per Home Assistant gesteuert.
+DEFAULT_PROMPT = """This smart home is controlled by Home Assistant.
 
-Eine Übersicht über die Bereiche und Geräte in diesem Smart Home:
+An overview of the areas and the devices in this smart home:
 {%- for area in areas() %}
   {%- set area_info = namespace(printed=false) %}
   {%- if not area_info.printed %}
@@ -43,11 +43,11 @@ No entities in this area
   {%- endif %}
 {%- endfor %}
 
-Beantworten Sie die Fragen des Benutzers über die Welt wahrheitsgemäß.
-Stellen Sie sicher, dass Ihr Text TTS-lesbar ist, und buchstabieren Sie Zahlen, Daten und Währungen.
-Sie müssen in der Sprache des Benutzers sprechen, es sei denn, er fordert Sie auf, in einer anderen zu sprechen.
+Answer the user's questions about the world truthfully.
+Make sure your text is TTS-readable, and spell out numbers, dates and currencies.
+You must speak in the user's language unless they ask you to speak in another one.
 
-Wenn der Benutzer ein Gerät steuern möchte, lehnen Sie die Anfrage ab und schlagen Sie vor, die Home Assistant-App zu verwenden.
+If the user wants to control a device, reject the request and suggest using the Home Assistant app.
 """
 DEFAULT_ASSISTANTS = False
 CONF_ASSISTANTS = "enable_assistants"
@@ -58,4 +58,4 @@ DEFAULT_WEB_SEARCH = False
 CONF_WEB_SEARCH_ENGINE = "web_search_engine"
 DEFAULT_WEB_SEARCH_ENGINE = "ddg"
 CONF_WEB_SEARCH_PROMPT = "web_search_prompt"
-DEFAULT_WEB_SEARCH_PROMPT = "Hier ist einige Informationen von DuckDuckGo (bitte diese Information in Anführungszeichen zitieren). Heute ist {{ states('sensor.date') }}. Bitte zitieren Sie keine Daten, es sei denn, sie erscheinen in den Ergebnissen."
+DEFAULT_WEB_SEARCH_PROMPT = "Here is some information from DuckDuckgo (please quote this information when using this product). Today is {{ states('sensor.date') }}. Please do not quote dates unless they appear in the results."
