@@ -23,7 +23,7 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
-    CONF_ASSISTANT_NAME,
+    CONF_ASSISTANT_ID,
     CONF_ASSISTANTS,
     CONF_CHAT_MODEL,
     CONF_EMAIL,
@@ -32,7 +32,7 @@ from .const import (
     CONF_WEB_SEARCH,
     CONF_WEB_SEARCH_ENGINE,
     CONF_WEB_SEARCH_PROMPT,
-    DEFAULT_ASSISTANT_NAME,
+    DEFAULT_ASSISTANT_ID,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_EMAIL,
@@ -64,7 +64,7 @@ DEFAULT_OPTIONS = types.MappingProxyType(
         CONF_CHAT_MODEL: DEFAULT_CHAT_MODEL,
         CONF_PROMPT: DEFAULT_PROMPT,
         CONF_ASSISTANTS: DEFAULT_ASSISTANTS,
-        CONF_ASSISTANT_NAME: DEFAULT_ASSISTANT_NAME,
+        CONF_ASSISTANT_ID: DEFAULT_ASSISTANT_ID,
         CONF_WEB_SEARCH: DEFAULT_WEB_SEARCH,
         CONF_WEB_SEARCH_ENGINE: DEFAULT_WEB_SEARCH_ENGINE,
         CONF_WEB_SEARCH_PROMPT: DEFAULT_WEB_SEARCH_PROMPT,
@@ -187,9 +187,9 @@ async def huggingchat_config_option_schema(
             default=DEFAULT_ASSISTANTS,
         ): bool,
         vol.Optional(
-            CONF_ASSISTANT_NAME,
-            description={"suggested_value": options[CONF_ASSISTANT_NAME]},
-            default=DEFAULT_ASSISTANT_NAME,
+            CONF_ASSISTANT_ID,
+            description={"suggested_value": options[CONF_ASSISTANT_ID]},
+            default=DEFAULT_ASSISTANT_ID,
         ): str,
         vol.Optional(
             CONF_WEB_SEARCH,

@@ -19,7 +19,7 @@
           "chat_model": "Chat-Modell",
           "prompt": "Prompt-Vorlage",
           "enable_assistants": "Assistenten aktivieren",
-          "assistant_name": "Assistenten-ID",
+          "assistant_id": "Assistenten-ID",
           "web_search": "Web-Suche aktivieren",
           "web_search_engine": "Suchmaschine",
           "web_search_prompt": "Suchaufforderung"

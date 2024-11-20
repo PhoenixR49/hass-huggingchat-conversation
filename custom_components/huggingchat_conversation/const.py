@@ -51,8 +51,8 @@ If the user wants to control a device, reject the request and suggest using the 
 """
 DEFAULT_ASSISTANTS = False
 CONF_ASSISTANTS = "enable_assistants"
-DEFAULT_ASSISTANT_NAME = "ChatGpt"
-CONF_ASSISTANT_NAME = "assistant_id"
+DEFAULT_ASSISTANT_ID = "65bd6d583140495b7e30f744"
+CONF_ASSISTANT_ID = "assistant_id"
 DEFAULT_WEB_SEARCH = False
 CONF_WEB_SEARCH = "web_search"
 DEFAULT_WEB_SEARCH_ENGINE = "ddg"

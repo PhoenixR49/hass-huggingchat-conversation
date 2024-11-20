@@ -16,14 +16,14 @@ from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import intent, template
 
 from .const import (
-    CONF_ASSISTANT_NAME,
+    CONF_ASSISTANT_ID,
     CONF_ASSISTANTS,
     CONF_CHAT_MODEL,
     CONF_PROMPT,
     CONF_WEB_SEARCH,
     CONF_WEB_SEARCH_ENGINE,
     CONF_WEB_SEARCH_PROMPT,
-    DEFAULT_ASSISTANT_NAME,
+    DEFAULT_ASSISTANT_ID,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_PROMPT,
@@ -84,8 +84,8 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         assistants = self.entry.options.get(
             CONF_ASSISTANTS, DEFAULT_ASSISTANTS
         )
-        assistant_name = self.entry.options.get(
-            CONF_ASSISTANT_NAME, DEFAULT_ASSISTANT_NAME
+        assistant_id = self.entry.options.get(
+            CONF_ASSISTANT_ID, DEFAULT_ASSISTANT_ID
         )
         web_search = self.entry.options.get(CONF_WEB_SEARCH, DEFAULT_WEB_SEARCH)
         web_search_engine = self.entry.options.get(
@@ -197,8 +197,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
 
         try:
             if assistants:
-                assistant = await self.hass.async_add_executor_job(chatbot.search_assistant, assistant_name)
-                await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant)
+                await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant_id)
 
             if web_search & (web_search_engine == "google"):
                 result = await self.hass.async_add_executor_job(
