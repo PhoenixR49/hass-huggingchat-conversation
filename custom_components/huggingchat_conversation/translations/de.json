@@ -1,0 +1,30 @@
+{
+  "config": {
+    "error": {
+      "invalid_auth": "Ungültige E-Mail oder Passwort."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "email": "HuggingFace E-Mail",
+          "password": "HuggingFace Passwort"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "chat_model": "Chat-Modell",
+          "prompt": "Prompt-Vorlage",
+          "enable_assistants": "Assistenten aktivieren",
+          "assistant_name": "Assistenten-ID",
+          "web_search": "Web-Suche aktivieren",
+          "web_search_engine": "Suchmaschine",
+          "web_search_prompt": "Suchaufforderung"
+        }
+      }
+    }
+  }
+}
