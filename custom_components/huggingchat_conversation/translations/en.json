@@ -19,7 +19,7 @@
           "chat_model": "Completion model",
           "prompt": "Prompt template",
           "enable_assistants": "Enable assistants",
-          "assistant_name": "Assistant name",
+          "assistant_name": "Assistant ID",
           "web_search": "Enable Web search",
           "web_search_engine": "Search engine",
           "web_search_prompt": "Search prompt template"

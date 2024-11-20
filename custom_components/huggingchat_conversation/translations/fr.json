@@ -19,7 +19,7 @@
           "chat_model": "Modèle de complétion",
           "prompt": "Modèle d'invite",
           "enable_assistants": "Activer les assistants",
-          "assistant_name": "Nom de l'assistant",
+          "assistant_name": "Identifiant de l'assistant",
           "web_search": "Activer la recherche Web",
           "web_search_engine": "Moteur de recherche",
           "web_search_prompt": "Modèle d'invite de recherche"
