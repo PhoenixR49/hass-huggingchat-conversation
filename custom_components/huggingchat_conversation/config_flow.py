@@ -145,7 +145,6 @@ class OptionsFlow(config_entries.OptionsFlow):
             data_schema=vol.Schema(schema),
         )
 
-
 async def huggingchat_config_option_schema(
     self, options: MappingProxyType[str, Any]
 ) -> dict:
@@ -160,7 +159,7 @@ async def huggingchat_config_option_schema(
         sign = Login(email, passwd)
         cookies = await self.hass.async_add_executor_job(sign.login)
 
-        sign.saveCookiesToDir(cookie_path_dir)
+        await self.hass.async_add_executor_job(sign.saveCookiesToDir, cookie_path_dir)
         chatbot = await self.hass.async_add_executor_job(
             initialize_chatbot, cookies.get_dict()
         )
@@ -205,7 +204,7 @@ async def huggingchat_config_option_schema(
                     {"label": "DuckDuckGo", "value": "ddg"},
                     {"label": "Google", "value": "google"},
                 ],
-                mode="list",
+                mode="dropdown",
             )
         ),
         vol.Optional(
