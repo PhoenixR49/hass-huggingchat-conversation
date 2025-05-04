@@ -103,7 +103,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
         sign = Login(email, passwd)
 
         try:
-            cookies = sign.loadCookiesFromDir(cookie_path_dir)
+            cookies = await self.hass.async_add_executor_job(
+                sign.loadCookiesFromDir, cookie_path_dir
+            )
         except Exception:
             cookies = await self.hass.async_add_executor_job(
                 sign.login, cookie_path_dir, True
@@ -115,8 +117,9 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             )
 
         try:
+            prompt = self._async_generate_prompt(raw_prompt)
             chatbot = await self.hass.async_add_executor_job(
-                initialize_chatbot, cookies.get_dict(), model, ""
+                initialize_chatbot, cookies.get_dict(), model, prompt
             )
         except hugchat.exceptions.ChatBotInitError as err:
             _LOGGER.error("Chat initialisation error: %s", err)
@@ -151,8 +154,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
                     chatbot.delete_conversation, info
                 )
 
-                if web_search & (web_search_engine == "ddg"):
-
+                if web_search and web_search_engine == "ddg":
                     async def aget_results():
                         results = await AsyncDDGS().atext(user_input.text, max_results=5)
                         formatted_results = [f"{r.get('title')}: {r.get('body')}\n" for r in results]
@@ -199,7 +201,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             if assistants:
                 await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant_id)
 
-            if web_search & (web_search_engine == "google"):
+            if web_search and web_search_engine == "google":
                 result = await self.hass.async_add_executor_job(
                     str,
                     chatbot.chat(user_input.text, web_search=True),
