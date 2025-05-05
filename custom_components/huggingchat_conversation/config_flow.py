@@ -32,7 +32,6 @@ from .const import (
     CONF_WEB_SEARCH,
     CONF_WEB_SEARCH_ENGINE,
     CONF_WEB_SEARCH_PROMPT,
-    DEFAULT_ASSISTANT_ID,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_EMAIL,
@@ -64,7 +63,7 @@ DEFAULT_OPTIONS = types.MappingProxyType(
         CONF_CHAT_MODEL: DEFAULT_CHAT_MODEL,
         CONF_PROMPT: DEFAULT_PROMPT,
         CONF_ASSISTANTS: DEFAULT_ASSISTANTS,
-        CONF_ASSISTANT_ID: DEFAULT_ASSISTANT_ID,
+        CONF_ASSISTANT_ID: None,
         CONF_WEB_SEARCH: DEFAULT_WEB_SEARCH,
         CONF_WEB_SEARCH_ENGINE: DEFAULT_WEB_SEARCH_ENGINE,
         CONF_WEB_SEARCH_PROMPT: DEFAULT_WEB_SEARCH_PROMPT,
@@ -189,7 +188,6 @@ async def huggingchat_config_option_schema(
         vol.Optional(
             CONF_ASSISTANT_ID,
             description={"suggested_value": options[CONF_ASSISTANT_ID]},
-            default=DEFAULT_ASSISTANT_ID,
         ): str,
         vol.Optional(
             CONF_WEB_SEARCH,

@@ -23,7 +23,6 @@ from .const import (
     CONF_WEB_SEARCH,
     CONF_WEB_SEARCH_ENGINE,
     CONF_WEB_SEARCH_PROMPT,
-    DEFAULT_ASSISTANT_ID,
     DEFAULT_ASSISTANTS,
     DEFAULT_CHAT_MODEL,
     DEFAULT_PROMPT,
@@ -85,7 +84,7 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
             CONF_ASSISTANTS, DEFAULT_ASSISTANTS
         )
         assistant_id = self.entry.options.get(
-            CONF_ASSISTANT_ID, DEFAULT_ASSISTANT_ID
+            CONF_ASSISTANT_ID
         )
         web_search = self.entry.options.get(CONF_WEB_SEARCH, DEFAULT_WEB_SEARCH)
         web_search_engine = self.entry.options.get(
