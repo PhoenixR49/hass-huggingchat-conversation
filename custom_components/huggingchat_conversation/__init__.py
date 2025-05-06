@@ -191,14 +191,13 @@ class HuggingChatAgent(conversation.AbstractConversationAgent):
 
             messages = [{"role": "system", "content": prompt}]
 
+            await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant_id)
+
         messages.append({"role": "user", "content": user_input.text})
 
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
         try:
-            if assistants:
-                await self.hass.async_add_executor_job(chatbot.new_conversation, model, prompt, True, assistant_id)
-
             if web_search & (web_search_engine == "google"):
                 result = await self.hass.async_add_executor_job(
                     str,
